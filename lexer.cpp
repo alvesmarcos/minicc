@@ -12,6 +12,9 @@ Token tok;
 /// O arquivo/stream de onde o lexer le caracteres
 FILE *stream;
 
+// linha em que o token foi encontrado
+int line = 1;
+
 /// buffer de caracteres para o lexer
 int buffer;
 bool bufferValid = false;
@@ -73,12 +76,14 @@ Token *getNextToken() {
     int c = getNextChar();
 
     // pula espaco em branco
-    while (isspace(c))
+    while (isspace(c)){
+        if(c=='\n') ++line;
         c = getNextChar();
-
+    }
     // valores iniciais
     tok.nome = "";
     tok.val = 0;
+    tok.line = line;
 
     bool done = false;
     while (!done) {
@@ -196,7 +201,7 @@ Token *getNextToken() {
                     }
                     done = true;
                 } else {
-                    std::string error = "Caractere nao esperado: ";
+                    std::string error = line+" => Caractere nao esperado: ";
                     error += static_cast<char>(c);
                     lexerError(error.c_str());
                     return nullptr;
@@ -204,7 +209,6 @@ Token *getNextToken() {
                 break;
         }
     }
-
     return &tok;
 }
 
@@ -214,11 +218,11 @@ Token *getNextToken() {
 int errors = 0;
 
 void printToken(Token *t) {
-    fprintf(stderr, "tipo: %s | val = %d | nome = %s", printTokenType(t->type), t->val, t->nome.c_str());
+    fprintf(stderr, "linha: %d | tipo: %s | val = %d | nome = %s\n", t->line, printTokenType(t->type), t->val, t->nome.c_str());
 }
 
 void printToken(TokType typ, int val, std::string nome) {
-    fprintf(stderr, "tipo: %s | val = %d | nome = %s", printTokenType(typ), val, nome.c_str());
+    fprintf(stderr, "tipo: %s | val = %d | nome = %s\n", printTokenType(typ), val, nome.c_str());
 }
 
 
@@ -229,10 +233,8 @@ static void testToken(Token *t1, TokType typ, int val, std::string nome) {
         fprintf(stderr, "Erro no teste: \n");
         fprintf(stderr, "Esperado: ");
         printToken(t1);
-        fprintf(stderr, "\n");
         fprintf(stderr, "Analise : ");
         printToken(typ, val, nome);
-        fprintf(stderr, "\n");
         errors++;
     }
 }

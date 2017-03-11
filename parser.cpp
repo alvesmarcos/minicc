@@ -19,6 +19,7 @@ void syntaxError(std::string msg) {
 
 void matchTokenType(TokType type) {
     if (tok->type != type) {
+        printToken(tok);
         printToken(type, 0, "");
         syntaxError("Token inesperado");
     }
@@ -29,6 +30,9 @@ void matchTokenType(TokType type) {
 /// Verifica se o token atual eh o esperado, e obtem o proximo
 void matchToken(TokType type, int val, std::string nome) {
     if (tok->type != type or tok->val != val or tok->nome != nome) {
+        fprintf(stderr, "Esperado: ");
+        printToken(tok);
+        fprintf(stderr, "Encontrado: ");
         printToken(type, val, nome);
         syntaxError("Token inesperado");
     }

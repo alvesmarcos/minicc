@@ -45,6 +45,7 @@ enum Pont {
 struct Token {
     TokType type;
     int val;
+    int line;
     std::string nome;
 };
 

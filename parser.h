@@ -11,6 +11,7 @@ Exp* parseAtom();
 void initParse();
 Exp* parseBinOp();
 void testParseExp();
+void testParsePrograma();
 Programa* parsePrograma();
 
 #endif //MINICC_PARSER_CPP_H
